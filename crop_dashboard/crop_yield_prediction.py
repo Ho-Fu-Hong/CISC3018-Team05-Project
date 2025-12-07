@@ -12,10 +12,9 @@ from sklearn.metrics import mean_absolute_error, r2_score
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# --- Configuration ---
 MODEL_PATH = os.path.join(BASE_DIR, 'best_model.pkl')
 PREPROCESSOR_PATH = os.path.join(BASE_DIR, 'preprocessor.pkl')
-CSV_PATH = os.path.join(BASE_DIR, 'yield_df.csv') # Used only for training/saving model
+CSV_PATH = os.path.join(BASE_DIR, 'yield_df.csv') 
 
 def load_and_preprocess_data(file_path):
     """Load and preprocess the data"""
@@ -43,7 +42,6 @@ def create_preprocessor():
 
 def prepare_features(df):
     """Separates features (X) and target (y)."""
-    # Note: Column names must match the names used in load_model_and_predict
     X = df[['Year', 'Rainfall', 'Pesticides', 'Avg_Temperature', 'Country', 'Crop']]
     y = df['Yield']
     return X, y
@@ -79,13 +77,11 @@ def train_and_save_model():
         print(f"Error during model training/saving: {e}", file=sys.stderr)
         return False
 
-# --- NEW Prediction Function for PHP Integration ---
 
 def load_model_and_predict(year, rainfall, pesticides, avg_temp, area, item):
     """
     Loads saved model and preprocessor to make a single prediction.
     """
-    # The input columns MUST be in the exact order as they were passed to prepare_features
     
     try:
         # Load preprocessor and model
@@ -93,7 +89,6 @@ def load_model_and_predict(year, rainfall, pesticides, avg_temp, area, item):
         model = pickle.load(open(MODEL_PATH, 'rb'))
         
         # Create input data DataFrame
-        # IMPORTANT: Use original column names from CSV (average_rain_fall_mm_per_year, pesticides_tonnes, Area, Item)
         input_data = pd.DataFrame([{ 
             'Year': year, 
             'Rainfall': rainfall, 
@@ -118,17 +113,12 @@ def load_model_and_predict(year, rainfall, pesticides, avg_temp, area, item):
     except Exception as e:
         return {"error": f"Prediction error: {str(e)}"}
 
-# --- Main execution block for command-line (PHP call) ---
 
 if __name__ == '__main__':
-    # Check if this script is being run to TRAIN or PREDICT
     if len(sys.argv) == 2 and sys.argv[1] == 'train':
-        # Used for initial setup: python crop_yield_prediction.py train
         train_and_save_model()
         sys.exit(0)
 
-    # Prediction mode (called by PHP)
-    # Expected arguments: year, rainfall, pesticides, temp, country, crop
     if len(sys.argv) == 7:
         try:
             year = int(sys.argv[1])

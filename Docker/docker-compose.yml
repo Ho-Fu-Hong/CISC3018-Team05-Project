@@ -6,25 +6,20 @@ services:
     container_name: spark-master
     hostname: spark-master
     ports:
-      - "8080:8080"    # Spark UI
-      - "7077:7077"    # Spark Master
-      - "9870:9870"    # NameNode Web UI
-      - "9864:9864"    # DataNode Web UI
-      - "50070:50070"  # Legacy NameNode UI
-      - "8088:8088"    # YARN
-      - "8888:8888"    # Jupyter
+      - "8080:8080"
+      - "7077:7077"
+      - "8888:8888"
     environment:
       - SPARK_MODE=master
       - SPARK_MASTER_HOST=spark-master
       - JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
     volumes:
-      - ./data:/data
-      - ./notebooks:/notebooks
-      - hdfs-namenode:/opt/hadoop-3.3.6/data/namenode
-      - hdfs-datanode-master:/opt/hadoop-3.3.6/data/datanode
+      - ./data:/opt/spark/data
+      - ./notebooks:/opt/spark/notebooks
+      - ./output:/opt/spark/output
     networks:
       - spark-network
-    command: bash -c "sudo service ssh start && start-dfs.sh && /opt/spark/sbin/start-master.sh && tail -f /dev/null"
+    command: bash -c "/opt/spark/sbin/start-master.sh && tail -f /dev/null"
 
   spark-worker-1:
     build: .
@@ -35,17 +30,15 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
       - SPARK_WORKER_CORES=2
       - SPARK_WORKER_MEMORY=2g
       - JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
     volumes:
-      - ./data:/data
-      - hdfs-datanode-worker1:/opt/hadoop-3.3.6/data/datanode
+      - ./data:/opt/spark/data
     networks:
       - spark-network
-    command: bash -c "sudo service ssh start && hdfs --daemon start datanode && /opt/spark/sbin/start-worker.sh spark://spark-master:7077 && tail -f /dev/null"
+    command: bash -c "/opt/spark/sbin/start-worker.sh spark://spark-master:7077 && tail -f /dev/null"
 
   spark-worker-2:
     build: .
@@ -56,24 +49,16 @@ services:
     ports:
       - "8082:8081"
     environment:
-      - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
       - SPARK_WORKER_CORES=2
       - SPARK_WORKER_MEMORY=2g
       - JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
     volumes:
-      - ./data:/data
-      - hdfs-datanode-worker2:/opt/hadoop-3.3.6/data/datanode
+      - ./data:/opt/spark/data
     networks:
       - spark-network
-    command: bash -c "sudo service ssh start && hdfs --daemon start datanode && /opt/spark/sbin/start-worker.sh spark://spark-master:7077 && tail -f /dev/null"
+    command: bash -c "/opt/spark/sbin/start-worker.sh spark://spark-master:7077 && tail -f /dev/null"
 
 networks:
   spark-network:
     driver: bridge
-
-volumes:
-  hdfs-namenode:
-  hdfs-datanode-master:
-  hdfs-datanode-worker1:
-  hdfs-datanode-worker2:

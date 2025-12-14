@@ -294,5 +294,3 @@ For issues or questions:
 
 **Built with Apache Spark 🚀**
 ```
-
-This README provides a complete setup guide with quick start instructions, troubleshooting tips, and examples. It's concise but covers all essential aspects of getting the project running! 📚

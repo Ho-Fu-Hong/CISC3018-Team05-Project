@@ -13,6 +13,8 @@ A Dockerized Apache Spark cluster setup with Jupyter Notebook integration and a 
 ## 🏗️ Project Structure
 
 ```
+
+```
 .
 ├── docker/
 │   ├── docker-compose.yml
@@ -24,6 +26,8 @@ A Dockerized Apache Spark cluster setup with Jupyter Notebook integration and a 
 ├── crop_dashboard/        # Web dashboard files
 │   └── data/              # Dashboard data & models
 └── DataPreprocessing_Analysis(ViVi)/  # Additional notebooks
+```
+
 ```
 
 ## 🚀 Quick Start

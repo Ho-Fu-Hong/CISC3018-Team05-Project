@@ -1,0 +1,1 @@
+This document provides comprehensive instructions for setting up and configuring Hadoop HDFS (Hadoop Distributed File System) as part of the Integrated Cloud-Based Weather & Crop Yield Prediction System. HDFS serves as the primary distributed storage layer for our agricultural datasets, providing fault-tolerant, scalable storage for Spark processing.

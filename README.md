@@ -1,4 +1,5 @@
 # CISC3018-Team05-Project
+## Indication of the project type: Cloud computing and big data systems analysis (mixture of both)
 Integrated Cloud-Based Weather &amp; Crop Yield Prediction System Using Apache Spark <br>
 <br>
 Introduction <br>
